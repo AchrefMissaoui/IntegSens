@@ -27,7 +27,6 @@ myGPS.getEsfInfo();myGPS.getEsfIns();
       lcd.clear();
       lcd.print("fusion mode "); lcd.print(myGPS.imuMeas.fusionMode);     
       Serial.print("fusion mode ");Serial.println(myGPS.imuMeas.fusionMode);
-//}else{
 if(myGPS.getEsfIns()){
    Serial.print(F("X: "));
     Serial.println(myGPS.imuMeas.xAngRate);  
