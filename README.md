@@ -1,2 +1,2 @@
 # IntegSens
-IntegSens project using neo-m8u
+IntegSens project using u-blox neo-m8u and arduino
