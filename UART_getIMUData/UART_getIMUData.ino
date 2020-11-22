@@ -10,14 +10,12 @@ void setup()
   Serial.begin(115200);
   lcd.begin(16, 2);
   
-  lcd.print("...");
+  lcd.print("connecting...");
   do {
     mySerial.begin(38400);
     if (myGPS.begin(mySerial) == true) break;
   }while(1);
    myGPS.setUART1Output(COM_TYPE_UBX); //Set the UART port to output UBX only
-  myGPS.setI2COutput(COM_TYPE_UBX); //Set the I2C port to output UBX only (turn off NMEA noise)
-  myGPS.saveConfiguration(); //Save the current settings to flash and BBR
   }
 
 
@@ -27,18 +25,20 @@ myGPS.getEsfInfo();myGPS.getEsfIns();
       lcd.clear();
       lcd.print("fusion mode "); lcd.print(myGPS.imuMeas.fusionMode);     
       Serial.print("fusion mode ");Serial.println(myGPS.imuMeas.fusionMode);
-if(myGPS.getEsfIns()){
-   Serial.print(F("X: "));
+    Serial.print(F("X: "));
     Serial.println(myGPS.imuMeas.xAngRate);  
     Serial.print(F("Y: "));
     Serial.println(myGPS.imuMeas.yAngRate);  
     Serial.print(F("Z: "));
     Serial.println(myGPS.imuMeas.zAngRate);  
     Serial.print(F("data "));
-   Serial.println(myGPS.imuMeas.rawDataType);  }
- 
+    Serial.println(myGPS.imuMeas.rawDataType);
+    if(myGPS.imuMeas.fusionMode==1){
+      lcd.clear();
+      lcd.print("X");lcd.setCursor(0,1);lcd.print(myGPS.imuMeas.xAngRate/1000);
+      lcd.setCursor(5,0);lcd.print("Y");lcd.setCursor(5,1);lcd.print(myGPS.imuMeas.yAngRate/1000);
+      lcd.setCursor(10,0); lcd.print("Z");lcd.setCursor(10,1);lcd.print(myGPS.imuMeas.zAngRate/1000);
+    }
 
-  
-//}
-  delay(1200);
+  delay(250);
 }
