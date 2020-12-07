@@ -32,11 +32,11 @@ byte armsUp[8] = {
   0b00100,
   0b01010
 };
-  int animationDirection = 2;// 0 : nothing , 1 : >>> , 2 : <<<
+  int animationDirection = 0;// 0 : nothing , 1 : >>> , 2 : <<<
   int animationY = 0 , animationX;
-  int delayTime = 500;
+  int delayTime = 250;
   int initialX = 8 ;
-  int gyroX , gyroY , gyroZ , lastGyroX , lastGyroY , lastGyroZ;
+  int gyroX , gyroY , gyroZ;
  
 
 void setup() {
@@ -48,7 +48,6 @@ void setup() {
     if (myGPS.begin(mySerial) == true) break;
   }while(1);
    myGPS.setUART1Output(COM_TYPE_UBX); //Set the UART port to output UBX only
-  myGPS.setI2COutput(COM_TYPE_UBX); //Set the I2C port to output UBX only (turn off NMEA noise)
   myGPS.saveConfiguration(); //Save the current settings to flash and BBR
   
   // create a new character
@@ -59,30 +58,38 @@ void setup() {
   animationX = initialX;
 
   //gyro info
-    gyroX = 0 ; gyroY = 0 ; gyroZ = 0 ; 
-    lastGyroX = 0 ; lastGyroY = 0 ; lastGyroZ = 0;
+   gyroY = 0; gyroZ = 0; gyroX = 0; 
+  
   
 
   
 }
 
 void loop() {
-myGPS.getEsfInfo();myGPS.getEsfIns();
-  gyroX = myGPS.imuMeas.xAngRate;
-  gyroY = myGPS.imuMeas.yAngRate;
-  gyroZ = myGPS.imuMeas.zAngRate;
+  myGPS.getEsfInfo();myGPS.getEsfIns();
+  lcd.clear();
+  lcd.print("fusion mode "); lcd.print(myGPS.imuMeas.fusionMode);     
+  Serial.print("fusion mode ");Serial.println(myGPS.imuMeas.fusionMode);
+    if(myGPS.imuMeas.fusionMode==1){
+      lcd.clear();
+      gyroY = myGPS.imuMeas.yAngRate/1000;
+      gyroZ = myGPS.imuMeas.zAngRate/1000;
+      gyroX = myGPS.imuMeas.xAngRate/1000;
 
-if(gyroY > lastGyroY){
-  animationDirection = 1;
-}else if (gyroY < lastGyroY){ animationDirection = 2;
-}else {animationDirection = 0;
-}if(gyroZ > lastGyroZ){
-  animationY = 0;
-}else if(gyroZ < lastGyroZ){animationY = 1;}
+      
+      if(gyroX > 0 &&  gyroZ < 0){
+        animationDirection = 1;
+                            }else 
+      if(gyroX < 0 &&  gyroZ > 0){ 
+        animationDirection = 2;
+                            }else 
+       {animationDirection = 0;
+                            
+     }if(gyroZ < 0 && gyroY > 0){animationY = 0;   
+                            }else 
+      if(gyroZ > 0 && gyroY < 0){animationY = 1;}
 
-lastGyroY = gyroY; lastGyroZ = gyroZ;
-  
- switch (animationDirection){
+switch (animationDirection){
     case 0: break; // animation stays in place
     case 1: // animation moves to the right
     if(animationX == 16){animationX = 0;}else{animationX++;}
@@ -90,8 +97,6 @@ lastGyroY = gyroY; lastGyroZ = gyroZ;
     case 2: // animation moves to the left
     if(animationX == 0){animationX = 16;}else{animationX--;}
     break;}
-
-    
     lcd.clear();
     lcd.setCursor(animationX, animationY);
     lcd.write(1);
@@ -99,5 +104,9 @@ lastGyroY = gyroY; lastGyroZ = gyroZ;
     lcd.setCursor(animationX, animationY);
     lcd.write(2);
     delay(delayTime);
+    }
+
+  
+ 
     
 }
