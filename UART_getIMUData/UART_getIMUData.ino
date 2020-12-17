@@ -31,8 +31,6 @@ myGPS.getEsfInfo();myGPS.getEsfIns();
     Serial.println(myGPS.imuMeas.yAngRate);  
     Serial.print(F("Z: "));
     Serial.println(myGPS.imuMeas.zAngRate);  
-    Serial.print(F("data "));
-    Serial.println(myGPS.imuMeas.rawDataType);
     if(myGPS.imuMeas.fusionMode==1){
       lcd.clear();
       lcd.print("X");lcd.setCursor(0,1);lcd.print(myGPS.imuMeas.xAngRate/1000);

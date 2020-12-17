@@ -72,22 +72,22 @@ void loop() {
   Serial.print("fusion mode ");Serial.println(myGPS.imuMeas.fusionMode);
     if(myGPS.imuMeas.fusionMode==1){
       lcd.clear();
-      gyroY = myGPS.imuMeas.yAngRate/1000;
-      gyroZ = myGPS.imuMeas.zAngRate/1000;
-      gyroX = myGPS.imuMeas.xAngRate/1000;
+      gyroY = myGPS.imuMeas.yAngRate/2000;
+      gyroZ = myGPS.imuMeas.zAngRate/2000;
+      gyroX = myGPS.imuMeas.xAngRate/2000;
 
       
-      if(gyroX > 0 &&  gyroZ < 0){
+      if(gyroX > 0){
         animationDirection = 1;
                             }else 
-      if(gyroX < 0 &&  gyroZ > 0){ 
+      if(gyroX < 0 ){ 
         animationDirection = 2;
                             }else 
        {animationDirection = 0;
                             
-     }if(gyroZ < 0 && gyroY > 0){animationY = 0;   
+     }if(gyroY < 0){animationY = 0;   
                             }else 
-      if(gyroZ > 0 && gyroY < 0){animationY = 1;}
+      if(gyroY > 0){animationY = 1;}
 
 switch (animationDirection){
     case 0: break; // animation stays in place
